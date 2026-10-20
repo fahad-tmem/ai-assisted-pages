@@ -385,7 +385,7 @@ footer { color: var(--muted); font-size: 0.9rem; border-top: 1px solid var(--lin
         <div><h3>Quality comes from the model and its inputs</h3><p>Model fit, what the model sees each turn, tool design and deterministic checks matter most. The framework rarely does.</p></div>
         <div><h3>The harness still matters</h3><p>The same model scores up to 8 points apart on Terminal-Bench 2.1 depending on the loop around it.</p></div>
         <div><h3>Authority lives outside the model</h3><p>Code at the tool boundary decides what an agent may do. A prompt cannot enforce permissions.</p></div>
-        <div><h3>Measure before you switch</h3><p>Own what is your product's value, rent the rest, keep rented parts replaceable, and let an evaluation decide.</p></div>
+        <div><h3>Measure before you switch</h3><p>Own what is your product's value, rent the rest, keep rented parts replaceable. Let a leak-free evaluation decide, and change one thing at a time.</p></div>
       </div>
     </header>
 
@@ -399,7 +399,8 @@ footer { color: var(--muted); font-size: 0.9rem; border-top: 1px solid var(--lin
         <div><dt>Model</dt><dd>The LLM that reasons and chooses actions. <em>Not the product that wraps it.</em></dd></div>
         <div><dt>Inference route</dt><dd>Where and on what terms the model runs: the vendor's API, a cloud marketplace, self-hosted serving such as vLLM, or a gateway. The same model on two routes can differ in features, data terms and refusals.</dd></div>
         <div><dt>Agent loop</dt><dd>The code that calls the model, runs the requested tools, appends the results and decides when to stop.</dd></div>
-        <div><dt>Harness</dt><dd>The loop plus what makes it work well: caching, compaction, paging of large tool output, built-in tools, recovery, budgets and subagents.</dd></div>
+        <div><dt>Harness (loop harness)</dt><dd>The loop plus what makes it work well: caching, compaction, paging of large tool output, built-in tools, recovery, budgets and subagents.</dd></div>
+        <div><dt>Harness text</dt><dd>The editable material the agent works from: system prompt, rules, skills, scripts and tool guidance. Some research calls this "the harness" too. <em>This page keeps the two apart.</em></dd></div>
         <div><dt>Thin agent SDK</dt><dd>A library that gives you the loop and leaves tools, sandbox, state and hosting to you. OpenAI Agents SDK, Google ADK, Pydantic AI.</dd></div>
         <div><dt>Full harness as a library</dt><dd>A finished agent with built-in file, shell and web tools that you embed. Claude Agent SDK, Codex SDK, OpenHands SDK.</dd></div>
         <div><dt>Orchestration framework</dt><dd>A library for structuring multi-step work as graphs or state machines, usually with checkpoints. LangGraph, Microsoft Agent Framework workflows, CrewAI flows.</dd></div>
@@ -408,6 +409,7 @@ footer { color: var(--muted); font-size: 0.9rem; border-top: 1px solid var(--lin
         <div><dt>Execution environment</dt><dd>Where the side effects of tool calls happen: your process, a container, a gVisor or microVM sandbox, or a hosted sandbox.</dd></div>
         <div><dt>Tool protocol</dt><dd>A standard interface: MCP connects tools and resources to models; A2A connects agents to agents.</dd></div>
         <div><dt>Skill</dt><dd>A packaged procedure in the open Agent Skills format (<code>SKILL.md</code> plus references and scripts), loaded only when needed. It carries knowledge, never permission.</dd></div>
+        <div><dt>Evaluation fixture</dt><dd>A task with a known answer key, used to measure an agent. The key never reaches the agent, or anyone editing its instructions.</dd></div>
       </dl>
     </section>
 
@@ -535,6 +537,9 @@ footer { color: var(--muted); font-size: 0.9rem; border-top: 1px solid var(--lin
           </tbody>
         </table>
       </div>
+      <div class="prose">
+        <p><strong>Replacing a loop library costs more than its core.</strong> The call-tools-repeat core is a few hundred lines. Production parity also covers streaming tool-call assembly, request and history conversion, tool context and error responses, lifecycle hooks, turn limits that keep completed history, and cancellation. Ignoring a library's events does not mean you are not using its processing. List what your code actually consumes from it before estimating a swap.</p>
+      </div>
     </section>
 
     <section id="quality" aria-labelledby="quality-h">
@@ -580,6 +585,19 @@ footer { color: var(--muted); font-size: 0.9rem; border-top: 1px solid var(--lin
         <div class="tooltip" id="tip" hidden></div>
       </figure>
       <p class="note">The effect ranges from nothing to about 8 points and does not always favour the vendor's own harness. Source: Snorkel Terminal-Bench 2.1 leaderboard, read 20 October 2026.</p>
+
+      <h3>Diagnose misses cheapest first</h3>
+      <ol class="ranked">
+        <li><b>Capability the agent lacks</b><p>Tools, toolchains and access. No prompt or model fixes a missing tool.</p></li>
+        <li><b>Harness text</b><p>Instructions, skills and scripts. Cheap to change, but only on evidence.</p></li>
+        <li><b>Sampling</b><p>Do several independent attempts find more than one does?</p></li>
+        <li><b>The model</b><p>A model comparison under one loop measures models under that loop. It does not isolate the loop.</p></li>
+        <li><b>The loop harness</b><p>Last, because it is the most expensive to change.</p></li>
+      </ol>
+      <div class="prose">
+        <p><strong>One small measurement is a seed, not a verdict.</strong> Repeat runs and report the spread before you trust a difference.</p>
+        <p><strong>Compute can buy recall.</strong> Several independent attempts, with their findings combined, can find more than one attempt. That only works where repeated runs have no side effects, and when findings have a stable identity so duplicates can be merged. Measure the combined result against a single run before you build it.</p>
+      </div>
     </section>
 
     <section id="autonomy" aria-labelledby="autonomy-h">
@@ -612,6 +630,18 @@ footer { color: var(--muted); font-size: 0.9rem; border-top: 1px solid var(--lin
       <div class="prose">
         <p>This keeps what users and operators need to know in advance: what they are authorising, what it will cost, and whether two runs can be compared. A planner agent that invents the structure gives up all three. Use one only where they do not matter.</p>
       </div>
+
+      <h3>Capturing model gains</h3>
+      <div class="prose">
+        <p>As models improve, every tactic you encode outside the model becomes a ceiling. A thin loop passes improvements straight through. What matters is how much tactic you encode, not which framework you use: a graph framework with one free agent node passes gains through too.</p>
+        <p>The gains are almost free, not free. A new model needs conformance checks, re-tuned prompts, re-sized limits and measurement on your own tasks. Prompts written for a weaker model are often too prescriptive for a stronger one. Not all structure should loosen:</p>
+      </div>
+      <div class="three">
+        <div><span class="label">Invariants</span><p>Permissions, consent, runaway budgets, evidence records, output validation.</p><p><b>Keep them.</b></p></div>
+        <div><span class="label">Policy and allocation</span><p>Turn and time budgets, task breadth, procedural checks.</p><p><b>Adjust per workflow, ideally as data rather than code.</b></p></div>
+        <div><span class="label">Model-specific heuristics</span><p>Retry counts, prescriptive prompt wording, workarounds for a serving quirk.</p><p><b>Retune or retire per model, with measurement.</b></p></div>
+      </div>
+      <p class="note">Published research points the same way. In the Harness² paper (2026), harness-text edits tuned for a weaker model added 17.3 points on one benchmark for another weak model, but only 2.6 for a frontier model.</p>
     </section>
 
     <section id="principles" aria-labelledby="principles-h">
@@ -632,6 +662,8 @@ footer { color: var(--muted); font-size: 0.9rem; border-top: 1px solid var(--lin
           <h3>Safety</h3>
           <ul>
             <li><b>Keep authority outside the model.</b> Permissions, consent, budgets and approvals are enforced in code at the tool boundary.</li>
+            <li><b>Authorize effects, not commands.</b> Constrain destination, effect class, budget and credentials, and leave the command vocabulary open.</li>
+            <li><b>Enforce at a boundary the agent cannot route around.</b> An agent with its own shell can bypass tool-level permissions. Route its traffic through a policy proxy that adds credentials, classifies, budgets and records each request, and block direct egress. Keep what the program receives, what you retain as evidence, and what the model sees apart.</li>
             <li><b>Treat everything the agent reads as untrusted.</b> Web pages, repositories, tool output, documents and uploaded skills can all carry prompt injection.</li>
             <li><b>Isolate execution</b> in proportion to risk: container, gVisor or microVM.</li>
             <li><b>Make side effects safe to repeat,</b> and confirm destructive ones at the point of use.</li>
@@ -656,6 +688,8 @@ footer { color: var(--muted); font-size: 0.9rem; border-top: 1px solid var(--lin
           <h3>Change</h3>
           <ul>
             <li><b>Evaluate on real tasks with ground truth.</b> Measure recall, precision, cost per completed task and variation across repeats. Re-run on every model or harness change. One improved case proves nothing.</li>
+            <li><b>Keep the answers away.</b> Answer keys and grader output never reach the agent or anyone editing its instructions. Task prompts describe the work, not its measurement, and eval runs cannot fetch published answers.</li>
+            <li><b>Change harness text only on execution evidence.</b> Cite the run behind each edit, change one thing at a time, and record each as helped, hurt, no effect or confounded. In published research, edits made without evidence lowered a benchmark score from 73.4 to 63.2.</li>
             <li><b>Keep rented parts replaceable.</b> Confine library imports, own your data contracts, and keep a conformance test per model and per loop.</li>
             <li><b>Treat model and endpoint capabilities as dated measurements.</b> Vendor APIs and self-hosted serving both change without notice.</li>
           </ul>
@@ -688,7 +722,9 @@ footer { color: var(--muted); font-size: 0.9rem; border-top: 1px solid var(--lin
         <p><strong>Use the open format.</strong> Agent Skills (<code>SKILL.md</code> plus references and scripts) became an open standard in December 2025 and is supported by Codex and many other agents. A skill loads in stages: name and description first, the body when needed, references on demand.</p>
         <p><strong>A skill is knowledge, not authority.</strong> If a skill could declare its own permissions, any uploaded file could grant itself power. Permissions come from the platform.</p>
         <p><strong>Skills are less portable than they look.</strong> A skill assumes a tool shape, such as shell, file editing and web access, and was tuned on one model. Under a different harness or model it behaves differently. Measure parity before you promise it.</p>
-        <p><strong>Workflows as data scale better than workflows as code.</strong> If end users will extend your product, a declarative workflow document can be validated, signed, priced and shown to the user before it runs. A workflow written as framework code needs an engineer and a review for every change.</p>
+        <p><strong>Scripts and skills carry more than prose.</strong> In published ablations, removing skills or scripts hurt more than removing prompt text. Prefer a deterministic script to a triggered procedure, and a triggered procedure to always-on prose.</p>
+        <p><strong>Never learn from untrusted runs.</strong> A self-improvement loop that learns from customer or attacker-reachable runs can write injected text into skills that every later user receives. Learn only from fixtures you own, and ship changes through your normal reviewed release path.</p>
+        <p><strong>Workflows as data scale better than workflows as code.</strong> If end users will extend your product, a declarative workflow document can be validated, signed, priced and shown to the user before it runs. A workflow written as framework code needs an engineer and a review for every change. A graph framework can still run behind a declarative format as an internal executor; what matters is what users author and what you can check before it runs.</p>
       </div>
     </section>
 
@@ -705,6 +741,7 @@ footer { color: var(--muted); font-size: 0.9rem; border-top: 1px solid var(--lin
             <tr><th scope="row">Internal developer automation</th><td>An existing coding agent run headless in CI, extended with skills and hooks</td><td>Writing your own harness</td></tr>
             <tr><th scope="row">Business processes across many SaaS tools, owned by non-engineers</th><td>A visual builder, self-hosted if data matters</td><td>A vendor builder without a track record</td></tr>
             <tr><th scope="row">A product with its own tools, policies and evidence needs</th><td>Your own platform for orchestration and authority, with a thin SDK or your own loop inside each step</td><td>A full harness whose permission model fights yours</td></tr>
+            <tr><th scope="row">You want a mature open harness but must enforce your own authority</th><td>The harness in a sandbox whose only way out is your policy proxy, with your own actions offered over MCP</td><td>Relying on the harness's own permission modes</td></tr>
             <tr><th scope="row">Long-running, branching workflows with approvals, written by engineers</th><td>An orchestration framework or a durable execution engine</td><td>One agent loop kept alive for days</td></tr>
             <tr><th scope="row">Workflows defined by users that must be checked and priced before they run</th><td>Declarative workflow documents run by your own supervisor</td><td>Framework code as the user-facing format</td></tr>
             <tr><th scope="row">No infrastructure team, vendor data terms acceptable</th><td>A managed agent runtime</td><td>Building a platform you will not staff</td></tr>
@@ -739,6 +776,8 @@ footer { color: var(--muted); font-size: 0.9rem; border-top: 1px solid var(--lin
         <div class="myth"><p class="said"><span class="tag">Heard</span>Checkpointing the agent lets you resume anything.</p><p class="real"><span class="tag">In practice</span>It restores the conversation. The browser session, the login, the test data and every side effect stay as they are.</p></div>
         <div class="myth"><p class="said"><span class="tag">Heard</span>Strict JSON mode guarantees valid output.</p><p class="real"><span class="tag">In practice</span>It depends on the serving stack. Validate every response.</p></div>
         <div class="myth"><p class="said"><span class="tag">Heard</span>The prompt can define what the agent is allowed to do.</p><p class="real"><span class="tag">In practice</span>Only code at the tool boundary can enforce it. A prompt can be argued with, including by text the agent reads.</p></div>
+        <div class="myth"><p class="said"><span class="tag">Heard</span>A smarter new model is a free upgrade.</p><p class="real"><span class="tag">In practice</span>Almost free. It needs conformance checks, re-tuned prompts, re-sized limits and measurement on your own tasks.</p></div>
+        <div class="myth"><p class="said"><span class="tag">Heard</span>More instructions can only help the agent.</p><p class="real"><span class="tag">In practice</span>Edits made without execution evidence have been measured making agents worse, and always-on prose is the most expensive place to put knowledge.</p></div>
         <div class="myth"><p class="said"><span class="tag">Heard</span>The framework list from last year still holds.</p><p class="real"><span class="tag">In practice</span>AutoGen went into maintenance mode in 2025 and Microsoft Agent Framework replaced it. OpenAI's Agent Builder closes 14 months after launch. Re-check before you choose.</p></div>
       </div>
     </section>
@@ -787,6 +826,7 @@ footer { color: var(--muted); font-size: 0.9rem; border-top: 1px solid var(--lin
         <li><a href="https://snorkel.ai/leaderboard/terminal-bench-2-1/">Terminal-Bench 2.1 leaderboard</a></li>
         <li>Agent Skills adoption (secondary): <a href="https://www.noqta.tn/en/news/skill-md-open-standard-30-ai-coding-tools-adoption-2026">noqta.tn</a>, <a href="https://codex.danielvaughan.com/2026/05/05/agent-skills-open-standard-portable-skills-codex-cli-cross-agent/">portable SKILL.md guide</a></li>
         <li><a href="https://playwright.dev/docs/trace-viewer-intro">Playwright trace viewer</a></li>
+        <li>Harness²: <em>Recursive Agent Harnessing for an Open World</em>, <a href="https://arxiv.org/abs/2610.14224">arXiv 2610.14224</a> (October 2026), <a href="https://github.com/google-research/harness2">code</a>. Figures are the authors' own.</li>
       </ul>
     </section>
 
