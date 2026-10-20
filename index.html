@@ -1,194 +1,967 @@
-<!DOCTYPE html>
-<html lang="en" class="scroll-smooth">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Beyond the Screen: The Dawn of Ambient Symbiosis</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;900&display=swap" rel="stylesheet">
-    <style>
-        body {
-            font-family: 'Inter', sans-serif;
-            background-color: #0a0a0a;
-            color: #e2e8f0;
-            overflow-x: hidden;
-        }
-       .hero-gradient {
-            background: radial-gradient(ellipse at 50% 30%, rgba(59, 130, 246, 0.15) 0%, rgba(10, 10, 10, 0) 70%);
-        }
-       .content-glow {
-            position: relative;
-        }
-       .content-glow::before {
-            content: '';
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            width: 100%;
-            height: 100%;
-            max-width: 800px;
-            transform: translate(-50%, -50%);
-            background: radial-gradient(circle, rgba(59, 130, 246, 0.07) 0%, rgba(10, 10, 10, 0) 70%);
-            filter: blur(100px);
-            z-index: -1;
-            opacity: 0;
-            transition: opacity 1s ease-in-out;
-        }
-       .content-glow.in-view::before {
-            opacity: 1;
-        }
-       .fade-in-section > * {
-            opacity: 0;
-            transform: translateY(20px);
-            transition: opacity 0.6s ease-out, transform 0.6s ease-out;
-        }
-       .fade-in-section.in-view > * {
-            opacity: 1;
-            transform: translateY(0);
-        }
-       .fade-in-section.in-view > *:nth-child(1) { transition-delay: 0.1s; }
-       .fade-in-section.in-view > *:nth-child(2) { transition-delay: 0.2s; }
-       .fade-in-section.in-view > *:nth-child(3) { transition-delay: 0.3s; }
-       .fade-in-section.in-view > *:nth-child(4) { transition-delay: 0.4s; }
-       .fade-in-section.in-view > *:nth-child(5) { transition-delay: 0.5s; }
-       .fade-in-section.in-view > *:nth-child(6) { transition-delay: 0.6s; }
-       .fade-in-section.in-view > *:nth-child(7) { transition-delay: 0.7s; }
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>Building AI Agents</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible+Mono:wght@400;500&family=Atkinson+Hyperlegible+Next:ital,wght@0,400;0,500;0,700;1,400&family=Schibsted+Grotesk:wght@600;700;800&display=swap">
+<style>
+/* Layout: a reference handbook. Sticky contents rail on wide screens, one reading column,
+   wide tables scroll inside their own frames. The stack of decisions is the signature visual. */
+:root {
+  --bg: #f3f5f7;
+  --surface: #ffffff;
+  --ink: #14202a;
+  --ink-2: #3e4a57;
+  --muted: #5b6775;
+  --line: #d8dee5;
+  --accent: #0a6b62;
+  --accent-ink: #ffffff;
+  --accent-wash: #e0efec;
+  --s1: #2a78d6;
+  --s2: #eb6834;
+  --font-display: "Schibsted Grotesk", "Helvetica Neue", Arial, sans-serif;
+  --font-body: "Atkinson Hyperlegible Next", "Segoe UI", system-ui, -apple-system, sans-serif;
+  --font-mono: "Atkinson Hyperlegible Mono", ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
+  --step--1: 0.875rem;
+  --step-0: 1.0625rem;
+  --step-1: 1.25rem;
+  --step-2: 1.6rem;
+  --step-3: 2.1rem;
+  --step-4: clamp(2.4rem, 5vw + 1rem, 3.6rem);
+  --radius: 10px;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0d1217;
+    --surface: #141b22;
+    --ink: #e3e8ed;
+    --ink-2: #bac4cf;
+    --muted: #8f9ba8;
+    --line: #25303b;
+    --accent: #5bc6b8;
+    --accent-ink: #06201d;
+    --accent-wash: #12302c;
+    --s1: #3987e5;
+    --s2: #d95926;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0d1217;
+  --surface: #141b22;
+  --ink: #e3e8ed;
+  --ink-2: #bac4cf;
+  --muted: #8f9ba8;
+  --line: #25303b;
+  --accent: #5bc6b8;
+  --accent-ink: #06201d;
+  --accent-wash: #12302c;
+  --s1: #3987e5;
+  --s2: #d95926;
+  color-scheme: dark;
+}
 
-       .app-icon {
-            opacity: 0;
-            transform: translateY(20px) scale(0.9);
-            transition: opacity 0.5s ease-out, transform 0.5s ease-out;
-        }
-       .app-grid-container.in-view .app-icon {
-            opacity: 1;
-            transform: translateY(0) scale(1);
-        }
-       .tech-card {
-            background-color: rgba(23, 31, 42, 0.5);
-            border: 1px solid #1e293b;
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-        }
-       .tech-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 20px rgba(59, 130, 246, 0.1);
-        }
-    </style>
-</head>
-<body class="antialiased">
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+body {
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--font-body);
+  font-size: var(--step-0);
+  line-height: 1.6;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+  padding-block: 0 64px;
+}
+a { color: var(--accent); text-underline-offset: 3px; }
+a:focus-visible, button:focus-visible, summary:focus-visible {
+  outline: 3px solid var(--accent);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+h1, h2, h3 { font-family: var(--font-display); line-height: 1.15; text-wrap: balance; margin: 0; }
+h2 { font-size: var(--step-3); font-weight: 800; letter-spacing: -0.01em; }
+h3 { font-size: var(--step-1); font-weight: 700; }
+p { margin: 0; }
+.label {
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  text-transform: uppercase;
+  letter-spacing: 0.09em;
+  color: var(--muted);
+}
 
-    <main class="max-w-4xl mx-auto px-4">
-        <header class="min-h-screen flex flex-col items-center justify-center text-center py-20 hero-gradient">
-            <h1 class="text-5xl md:text-8xl font-black text-transparent bg-clip-text bg-gradient-to-br from-white to-slate-400 mb-4">Beyond the Screen</h1>
-            <h2 class="text-4xl md:text-7xl font-black text-transparent bg-clip-text bg-gradient-to-br from-blue-400 to-purple-500">The Dawn of Ambient Symbiosis</h2>
-            <div class="mt-12 text-lg text-slate-400 border-l-2 border-blue-500 pl-6">
-                The future of interaction isn't a better app. It's technology that disappears into the fabric of our lives, creating a proactive and intelligent partnership.
-            </div>
-        </header>
+/* ---------- Shell ---------- */
+.shell {
+  max-width: 1180px;
+  margin: 0 auto;
+  display: grid;
+  gap: 48px;
+}
+@media (min-width: 1080px) {
+  .shell { grid-template-columns: 210px minmax(0, 1fr); gap: 56px; }
+}
+.rail { display: none; }
+@media (min-width: 1080px) {
+  .rail {
+    display: block;
+    position: sticky;
+    top: calc(env(safe-area-inset-top, 0px) + 28px);
+    align-self: start;
+    padding-top: 40px;
+  }
+}
+.rail ol { list-style: none; margin: 12px 0 0; padding: 0; display: grid; gap: 2px; }
+.rail a {
+  display: block;
+  padding: 5px 10px;
+  border-left: 2px solid var(--line);
+  color: var(--muted);
+  text-decoration: none;
+  font-size: 0.92rem;
+  line-height: 1.35;
+}
+.rail a:hover { color: var(--ink); }
+.rail a.is-active { color: var(--ink); border-left-color: var(--accent); font-weight: 500; }
 
-        <article class="space-y-24 md:space-y-32">
+main { min-width: 0; display: grid; gap: 72px; }
+section { display: grid; gap: 20px; min-width: 0; scroll-margin-top: 24px; }
+.prose { max-width: 66ch; display: grid; gap: 14px; color: var(--ink-2); }
+.prose strong { color: var(--ink); }
+.section-head { display: grid; gap: 8px; max-width: 66ch; }
+.section-head p { color: var(--ink-2); font-size: var(--step-1); line-height: 1.45; }
 
-            <section class="fade-in-section content-glow">
-                <p class="text-xl md:text-2xl leading-relaxed text-slate-200">For decades, our digital lives have been governed by a simple metaphor: the application. We open an app for a specific task—a word processor to write, a map to navigate, a separate program to edit a photo. This model, built on the Graphical User Interface (GUI), made computers accessible to all. But its time is coming to an end.</p>
-                <p class="text-lg leading-relaxed text-slate-400 mt-8">A profound revolution is underway, moving us from a world of siloed apps into a "post-app" era defined by Ambient Symbiosis. This isn't hype about a far-off future; it's a practical shift where technology recedes into the background, becoming an invisible, proactive partner that anticipates our needs. The interaction model is flipping from human-initiated commands to system-initiated, context-aware support. This blog outlines the technical architecture and societal implications of this new reality.</p>
-            </section>
+/* ---------- Hero ---------- */
+.hero { padding-top: 40px; display: grid; gap: 24px; }
+.hero h1 { font-size: var(--step-4); font-weight: 800; letter-spacing: -0.02em; }
+.hero .lead { font-size: var(--step-1); line-height: 1.5; color: var(--ink-2); max-width: 60ch; }
+.formula {
+  display: flex; flex-wrap: wrap; align-items: center; gap: 10px;
+  font-family: var(--font-mono); font-size: 0.95rem;
+}
+.formula span {
+  padding: 6px 12px; border-radius: 999px; background: var(--surface);
+  border: 1px solid var(--line); color: var(--ink);
+}
+.formula .op { padding: 0; border: 0; background: none; color: var(--muted); }
+.formula .result { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); }
+.mobile-toc { display: flex; flex-wrap: wrap; gap: 8px; }
+@media (min-width: 1080px) { .mobile-toc { display: none; } }
+.mobile-toc a {
+  font-size: 0.88rem; padding: 4px 10px; border: 1px solid var(--line);
+  border-radius: 999px; text-decoration: none; color: var(--ink-2); background: var(--surface);
+}
 
-            <section class="fade-in-section content-glow">
-                <h3 class="text-3xl md:text-4xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-300 to-purple-400 mb-12 text-center">The Architecture of Symbiosis</h3>
-                <div class="space-y-10">
-                    <div class="tech-card p-6 rounded-xl">
-                        <h4 class="font-bold text-2xl text-slate-100 mb-3">1. The Perception Layer: The Senses of the Environment</h4>
-                        <p class="text-slate-400 mb-4">The foundation is an Ambient Computing Fabric—a digital nervous system woven into our surroundings. This layer uses a network of advanced sensors to perceive the world in real-time, providing the raw data for understanding.</p>
-                        <ul class="list-disc list-inside space-y-2 text-slate-300">
-                            <li><span class="font-semibold text-blue-400">Advanced Visual Sensors:</span> Beyond normal cameras, event-based cameras mimic the human eye, capturing changes with microsecond latency, ideal for tracking motion and gestures in AR/VR.</li>
-                            <li><span class="font-semibold text-blue-400">High-Frequency Radar:</span> Millimeter-wave radar enables fine-grained, privacy-preserving gesture recognition by detecting sub-millimeter finger motions without cameras.</li>
-                            <li><span class="font-semibold text-blue-400">Non-Invasive Biosensors:</span> Wearables with dry EEG sensors made from materials like graphene can monitor cognitive states (focus, stress), while electrochemical sensors analyze sweat to track metabolic health in real-time.</li>
-                            <li><span class="font-semibold text-blue-400">Unified Connectivity:</span> Locally, standards like Matter and Thread break down proprietary walls, allowing devices from different brands to interoperate seamlessly. Globally, 6G will provide the ultra-low latency and massive bandwidth required for truly immersive XR and remote robotics.</li>
-                        </ul>
-                    </div>
+.takeaways {
+  display: grid; gap: 1px; background: var(--line);
+  border: 1px solid var(--line); border-radius: var(--radius); overflow: hidden;
+  grid-template-columns: 1fr;
+}
+@media (min-width: 680px) { .takeaways { grid-template-columns: 1fr 1fr; } }
+@media (min-width: 1180px) { .takeaways { grid-template-columns: 1fr 1fr 1fr; } }
+.takeaways div { background: var(--surface); padding: 18px 20px; display: grid; gap: 6px; align-content: start; }
+.takeaways h3 { font-size: 1.05rem; }
+.takeaways p { color: var(--ink-2); font-size: 0.97rem; line-height: 1.5; }
 
-                    <div class="tech-card p-6 rounded-xl">
-                        <h4 class="font-bold text-2xl text-slate-100 mb-3">2. The Cognitive Core: The Agent's Brain</h4>
-                        <p class="text-slate-400 mb-4">This layer transforms raw perception into understanding and intent into action. It's powered by a new class of Multimodal, Agentic AI.</p>
-                        <ul class="list-disc list-inside space-y-2 text-slate-300">
-                            <li><span class="font-semibold text-purple-400">Multimodal Fusion:</span> The AI fuses data from speech, vision, gestures, and biometrics simultaneously. Using advanced Transformer-based fusion architectures, it dynamically weighs the importance of each sense, overcoming the limitations of any single input (e.g., relying on gestures in a noisy room).</li>
-                            <li><span class="font-semibold text-purple-400">Agentic Reasoning:</span> The AI acts as an autonomous agent, capable of breaking down high-level goals into multi-step plans using frameworks like ReAct (Reason+Act). This allows it to move from simply answering questions to executing complex tasks on the user's behalf.</li>
-                            <li><span class="font-semibold text-purple-400">Knowledge Grounding:</span> To prevent factual errors or "hallucinations," the agent's reasoning is grounded in Knowledge Graphs (KGs). These structured databases of facts and relationships provide a scaffold of real-world context, ensuring the AI's outputs are both intelligent and accurate.</li>
-                        </ul>
-                    </div>
+/* ---------- Terms ---------- */
+.terms { display: grid; gap: 0; margin: 0; grid-template-columns: 1fr; border-top: 1px solid var(--line); }
+@media (min-width: 760px) { .terms { grid-template-columns: 1fr 1fr; column-gap: 40px; } }
+.terms div { padding: 14px 0; border-bottom: 1px solid var(--line); display: grid; gap: 4px; min-width: 0; }
+.terms dt { font-weight: 700; color: var(--ink); }
+.terms dd { margin: 0; color: var(--ink-2); font-size: 0.97rem; line-height: 1.5; }
+.terms dd em { color: var(--muted); font-style: normal; }
 
-                    <div class="tech-card p-6 rounded-xl">
-                        <h4 class="font-bold text-2xl text-slate-100 mb-3">3. The Dynamic Interface: A Generated Reality</h4>
-                        <p class="text-slate-400 mb-4">The interface is no longer a static screen. It becomes a fluid, multi-sensory experience generated by AI to perfectly fit the moment.</p>
-                        <ul class="list-disc list-inside space-y-2 text-slate-300">
-                            <li><span class="font-semibold text-green-400">Generative UI (GenUI):</span> Instead of pre-designed layouts, the AI constructs the interface on the fly, tailored to the user's task, context, and even cognitive state. Frameworks like openv0 and tools like Google's Galileo are early examples of this trend.</li>
-                            <li><span class="font-semibold text-green-400">Immersive Channels (AR/VR):</span> The GenUI is rendered onto spatial canvases. Augmented Reality overlays information onto the real world, guiding a technician through a repair or a surgeon through a procedure. Virtual Reality creates fully immersive environments for training, collaboration, and therapy.</li>
-                            <li><span class="font-semibold text-green-400">Advanced Haptics:</span> We will *feel* the digital world. Beyond simple vibrations, new actuators with full Freedom of Motion (FOM) can simulate complex sensations like pushing, pulling, and sliding textures, making virtual objects feel real.</li>
-                        </ul>
-                    </div>
-                    
-                    <div class="tech-card p-6 rounded-xl">
-                        <h4 class="font-bold text-2xl text-slate-100 mb-3">4. The Neural Frontier: The Ultimate Interface</h4>
-                        <p class="text-slate-400 mb-4">The final frontier is the Brain-Computer Interface (BCI), a direct pathway from mind to machine that bypasses physical action entirely.</p>
-                        <ul class="list-disc list-inside space-y-2 text-slate-300">
-                            <li><span class="font-semibold text-red-400">From Restoration to Augmentation:</span> Initially focused on restoring function for individuals with paralysis or neurological disorders, BCI applications are expanding. Future uses include enhanced control of our ambient environments and even sensory augmentation.</li>
-                            <li><span class="font-semibold text-red-400">Minimally Invasive Tech:</span> Breakthroughs like the Synchron Stentrode, which is delivered via blood vessels, are making BCI technology safer and more accessible by avoiding open-brain surgery.</li>
-                        </ul>
-                    </div>
-                </div>
-            </section>
+/* ---------- Stack of decisions ---------- */
+.stack { display: grid; gap: 10px; }
+.band {
+  display: grid; gap: 0; background: var(--surface); border: 1px solid var(--line);
+  border-radius: var(--radius); overflow: hidden; grid-template-columns: 1fr;
+}
+@media (min-width: 760px) { .band { grid-template-columns: 170px minmax(0, 1fr); } }
+.band-name {
+  padding: 16px 18px; background: var(--accent-wash); display: grid; gap: 4px; align-content: start;
+}
+.band-name strong { font-family: var(--font-display); font-size: 1.1rem; color: var(--ink); }
+.band-name span { font-size: 0.88rem; color: var(--ink-2); line-height: 1.4; }
+.band ul { list-style: none; margin: 0; padding: 0; }
+.band li {
+  display: grid; gap: 4px 24px; padding: 14px 18px; border-top: 1px solid var(--line);
+  grid-template-columns: 1fr;
+}
+.band li:first-child { border-top: 0; }
+@media (min-width: 900px) { .band li { grid-template-columns: 180px minmax(0, 1fr) minmax(0, 1fr); } }
+.band li b { color: var(--ink); }
+.band li .q { color: var(--ink-2); }
+.band li .m { color: var(--muted); font-size: 0.95rem; }
+.band li .m::before { content: "Common mistake: "; font-weight: 700; color: var(--ink-2); }
 
-            <section class="fade-in-section content-glow">
-                <h3 class="text-3xl md:text-4xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-300 to-purple-400 mb-12 text-center">The Human Dimension: Governance for a Symbiotic Age</h3>
-                <p class="text-lg leading-relaxed text-slate-400 mb-8">This technological leap is not without profound challenges. A future of Ambient Symbiosis is only desirable if it is built on a foundation of trust, privacy, and human agency. This requires a new social contract and robust governance frameworks.</p>
-                <div class="space-y-8">
-                    <div>
-                        <h4 class="font-bold text-xl text-slate-100">The Paradox of Agency and Cognitive Liberty</h4>
-                        <p class="text-slate-400 mt-2">A system that perfectly anticipates our needs risks diminishing our autonomy and skills. This has led to the emergence of Cognitive Liberty as a new legal frontier—the right to mental self-determination, free from non-consensual monitoring or manipulation of our thoughts. States like Colorado are already pioneering legislation to protect "neural data" as a uniquely sensitive category of information.</p>
-                    </div>
-                    <div>
-                        <h4 class="font-bold text-xl text-slate-100">Building Trust Through Transparency</h4>
-                        <p class="text-slate-400 mt-2">For users to trust these systems, especially in high-stakes areas like healthcare, their decisions cannot be opaque "black boxes". This requires two key practices: Explainable AI (XAI), which makes an AI's reasoning understandable to humans, and mandatory Algorithmic Auditing by independent third parties to detect bias and ensure fairness.</p>
-                    </div>
-                    <div>
-                        <h4 class="font-bold text-xl text-slate-100">Privacy by Design</h4>
-                        <p class="text-slate-400 mt-2">Pervasive sensing demands a new model for privacy. Technically, this is addressed by Privacy-Preserving Machine Learning (PPML), using methods like Federated Learning (training models on-device without sending raw data to the cloud) and Differential Privacy (adding statistical noise to datasets to protect individual identities). Legally, this is supported by the concept of the Data Fiduciary, which obligates companies to act in the best interests of their users, shifting from a model of data exploitation to one of stewardship.</p>
-                    </div>
-                    <div>
-                        <h4 class="font-bold text-xl text-slate-100">The Psychological Cost of a Frictionless World</h4>
-                        <p class="text-slate-400 mt-2">While designed to reduce cognitive load, a perfectly anticipatory environment can introduce a new kind of stress. The constant, low-level activation of our stress response systems can lead to Allostatic Load—the cumulative "wear and tear" on the body and brain from chronic stress. This highlights the need for Cognitive Ergonomics, a design discipline focused on creating systems that support human well-being, sometimes by intentionally designing in "positive friction" to preserve our sense of agency and control.</p>
-                    </div>
-                </div>
-            </section>
-            
-            <section class="fade-in-section content-glow text-center py-16">
-                <h3 class="text-2xl md:text-4xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-500">The Choice Ahead</h3>
-                <p class="mt-4 text-xl text-slate-300">The era of Ambient Symbiosis is not a predetermined outcome. It is a choice.</p>
-                <p class="mt-2 text-slate-400">The technologies are converging, but their impact will be defined by the values we embed within them. A future that is empowering, equitable, and human-centric is not guaranteed; it must be deliberately designed. The task ahead is to build not just smarter machines, but a wiser and more responsible framework for our life with them.</p>
-            </section>
+/* ---------- Matrix ---------- */
+.frame { overflow-x: auto; border: 1px solid var(--line); border-radius: var(--radius); background: var(--surface); }
+table { border-collapse: collapse; width: 100%; font-size: 0.95rem; }
+th, td { text-align: left; vertical-align: top; padding: 12px 14px; border-bottom: 1px solid var(--line); }
+tr:last-child td { border-bottom: 0; }
+thead th { font-family: var(--font-mono); font-weight: 500; font-size: 0.74rem; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); background: var(--surface); }
+tbody th { font-weight: 700; color: var(--ink); }
+td { color: var(--ink-2); }
+.matrix { min-width: 820px; }
+.matrix td, .matrix thead th:not(:first-child) { text-align: center; }
+.matrix thead th { vertical-align: bottom; }
+.matrix tbody th { white-space: nowrap; }
+.mark { display: inline-block; width: 14px; height: 14px; border-radius: 50%; vertical-align: middle; }
+.mark.p { background: var(--accent); }
+.mark.s { background: linear-gradient(90deg, var(--accent) 50%, transparent 50%); box-shadow: inset 0 0 0 2px var(--accent); }
+.mark.y { box-shadow: inset 0 0 0 2px var(--muted); }
+.mark-key { display: flex; flex-wrap: wrap; gap: 8px 20px; font-size: 0.92rem; color: var(--ink-2); }
+.mark-key span { display: inline-flex; align-items: center; gap: 8px; }
+.sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+.note { font-size: 0.92rem; color: var(--muted); max-width: 70ch; }
 
+.approaches { display: grid; gap: 0; border-top: 1px solid var(--line); }
+.approach {
+  display: grid; gap: 6px 28px; padding: 18px 0; border-bottom: 1px solid var(--line);
+  grid-template-columns: 1fr;
+}
+@media (min-width: 860px) { .approach { grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr) minmax(0, 1fr); } }
+.approach h3 { font-size: 1.1rem; }
+.approach .ex { font-size: 0.92rem; color: var(--muted); }
+.approach p { font-size: 0.97rem; color: var(--ink-2); line-height: 1.5; }
+.approach .k { display: block; font-family: var(--font-mono); font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.09em; color: var(--muted); margin-bottom: 2px; }
+
+.callouts { display: grid; gap: 14px; grid-template-columns: 1fr; }
+@media (min-width: 860px) { .callouts { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+.callout {
+  background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius);
+  padding: 18px 20px; display: grid; gap: 8px; align-content: start;
+}
+.callout h3 { font-size: 1.02rem; }
+.callout p { font-size: 0.95rem; color: var(--ink-2); line-height: 1.5; }
+
+/* ---------- Quality ---------- */
+.ranked { list-style: none; margin: 0; padding: 0; display: grid; gap: 0; counter-reset: rank; max-width: 76ch; }
+.ranked li {
+  counter-increment: rank; display: grid; grid-template-columns: 44px minmax(0, 1fr); gap: 4px 12px;
+  padding: 16px 0; border-bottom: 1px solid var(--line);
+}
+.ranked li::before {
+  content: counter(rank); grid-row: span 2; font-family: var(--font-display); font-weight: 800;
+  font-size: 1.6rem; line-height: 1; color: var(--accent);
+}
+.ranked b { color: var(--ink); }
+.ranked p { color: var(--ink-2); font-size: 0.98rem; line-height: 1.5; }
+
+.example {
+  border-left: 3px solid var(--accent); padding: 4px 0 4px 18px; max-width: 66ch;
+  color: var(--ink-2); display: grid; gap: 6px;
+}
+.example .big { font-family: var(--font-display); font-size: var(--step-2); font-weight: 700; color: var(--ink); line-height: 1.2; }
+
+/* Chart */
+.chart {
+  margin: 0; background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius);
+  padding: 22px 22px 18px; display: grid; gap: 16px; position: relative; max-width: 900px;
+}
+.chart-title { display: grid; gap: 4px; }
+.chart-title strong { font-family: var(--font-display); font-size: 1.15rem; color: var(--ink); }
+.chart-title span { font-size: 0.92rem; color: var(--muted); }
+.legend { display: flex; flex-wrap: wrap; gap: 6px 22px; font-size: 0.9rem; color: var(--ink-2); }
+.legend span { display: inline-flex; align-items: center; gap: 8px; }
+.legend i { width: 10px; height: 10px; border-radius: 50%; display: inline-block; }
+.legend i.s1 { background: var(--s1); }
+.legend i.s2 { background: var(--s2); }
+.db { display: grid; gap: 4px; }
+.db-row, .db-axis {
+  display: grid; align-items: center; gap: 4px 16px;
+  grid-template-columns: 1fr;
+  grid-template-areas: "name" "track" "gap";
+}
+@media (min-width: 640px) {
+  .db-row, .db-axis { grid-template-columns: 150px minmax(0, 1fr) 150px; grid-template-areas: "name track gap"; }
+}
+.db-row { padding: 6px 0; }
+.db-name { grid-area: name; font-size: 0.95rem; color: var(--ink); line-height: 1.25; }
+.db-name small { display: block; color: var(--muted); font-size: 0.8rem; }
+.db-gap { grid-area: gap; font-size: 0.85rem; color: var(--ink-2); font-variant-numeric: tabular-nums; }
+.track {
+  grid-area: track; position: relative; height: 30px;
+  background-image: linear-gradient(var(--line), var(--line));
+  background-size: 100% 1px; background-position: center; background-repeat: no-repeat;
+}
+.grid-lines { position: absolute; inset: -6px 0; pointer-events: none; }
+.grid-lines i { position: absolute; top: 0; bottom: 0; width: 1px; background: var(--line); opacity: 0.7; }
+.span-line { position: absolute; top: 50%; height: 2px; margin-top: -1px; background: var(--muted); border-radius: 2px; }
+.dot {
+  position: absolute; top: 50%; width: 24px; height: 24px; margin: -12px 0 0 -12px; padding: 0;
+  border: 0; background: transparent; cursor: default; border-radius: 50%;
+}
+.dot::after {
+  content: ""; position: absolute; left: 50%; top: 50%; width: 12px; height: 12px; margin: -6px 0 0 -6px;
+  border-radius: 50%; box-shadow: 0 0 0 2px var(--surface);
+}
+.dot.s1::after { background: var(--s1); }
+.dot.s2::after { background: var(--s2); }
+.dot:hover::after, .dot:focus-visible::after { width: 16px; height: 16px; margin: -8px 0 0 -8px; }
+.db-axis .track { height: 18px; background: none; }
+.tick { position: absolute; top: 0; transform: translateX(-50%); font-size: 0.78rem; color: var(--muted); font-variant-numeric: tabular-nums; font-family: var(--font-mono); }
+.tooltip {
+  position: absolute; pointer-events: none; background: var(--ink); color: var(--bg);
+  padding: 8px 10px; border-radius: 8px; font-size: 0.85rem; line-height: 1.35; max-width: 240px;
+  transform: translate(-50%, calc(-100% - 12px)); z-index: 5;
+}
+.tooltip b { display: block; font-size: 1rem; }
+details.table-view { font-size: 0.92rem; }
+details.table-view summary { cursor: pointer; color: var(--accent); width: max-content; max-width: 100%; }
+details.table-view .frame { margin-top: 10px; }
+details.table-view table { min-width: 520px; font-variant-numeric: tabular-nums; }
+
+/* ---------- Autonomy ---------- */
+.split { display: grid; gap: 14px; grid-template-columns: 1fr; }
+@media (min-width: 760px) { .split { grid-template-columns: 1fr 1fr; } }
+.split > div { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: 18px 20px; display: grid; gap: 10px; align-content: start; }
+.split > div.decides-model { background: var(--accent-wash); border-color: transparent; }
+.split ul { margin: 0; padding-left: 1.1em; color: var(--ink-2); display: grid; gap: 4px; }
+
+/* ---------- Principles ---------- */
+.principles { display: grid; gap: 14px; grid-template-columns: 1fr; }
+@media (min-width: 760px) { .principles { grid-template-columns: 1fr 1fr; } }
+.principles > div { display: grid; gap: 10px; align-content: start; padding: 18px 20px; background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); }
+.principles ul { margin: 0; padding-left: 1.1em; display: grid; gap: 8px; color: var(--ink-2); font-size: 0.97rem; line-height: 1.5; }
+.principles li b { color: var(--ink); }
+.principles .wide { grid-column: 1 / -1; }
+
+.three { display: grid; gap: 14px; grid-template-columns: 1fr; }
+@media (min-width: 860px) { .three { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+.three > div { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: 18px 20px; display: grid; gap: 8px; align-content: start; }
+.three p, .three ul { font-size: 0.95rem; color: var(--ink-2); line-height: 1.5; margin: 0; }
+.three ul { padding-left: 1.1em; display: grid; gap: 4px; }
+
+/* ---------- Myths ---------- */
+.myths { display: grid; gap: 14px; grid-template-columns: 1fr; }
+@media (min-width: 760px) { .myths { grid-template-columns: 1fr 1fr; } }
+.myth { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: 18px 20px; display: grid; gap: 10px; align-content: start; }
+.myth .said { color: var(--muted); font-style: italic; }
+.myth .real { color: var(--ink); line-height: 1.5; }
+.myth .tag { font-family: var(--font-mono); font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.1em; font-style: normal; display: block; margin-bottom: 2px; }
+.myth .real .tag { color: var(--accent); }
+
+.sources { margin: 0; padding-left: 1.1em; display: grid; gap: 6px; font-size: 0.92rem; color: var(--ink-2); max-width: 90ch; }
+.sources li { overflow-wrap: anywhere; }
+footer { color: var(--muted); font-size: 0.9rem; border-top: 1px solid var(--line); padding-top: 20px; max-width: 70ch; }
+</style>
+
+<div class="shell">
+  <nav class="rail" aria-label="Contents">
+    <div class="label">Contents</div>
+    <ol>
+      <li><a href="#terms">Terms</a></li>
+      <li><a href="#decisions">The nine decisions</a></li>
+      <li><a href="#approaches">Seven ways to build</a></li>
+      <li><a href="#lockin">Lock-in</a></li>
+      <li><a href="#quality">What makes an agent good</a></li>
+      <li><a href="#autonomy">Structure and tactics</a></li>
+      <li><a href="#principles">Design principles</a></li>
+      <li><a href="#durability">Durability, teams, skills</a></li>
+      <li><a href="#choosing">Choosing an approach</a></li>
+      <li><a href="#myths">Common misconceptions</a></li>
+      <li><a href="#landscape">Landscape, Oct 2026</a></li>
+      <li><a href="#sources">Sources</a></li>
+    </ol>
+  </nav>
+
+  <main>
+    <header class="hero">
+      <div class="label">A reference for teams building agents &middot; October 2026</div>
+      <h1>Building AI Agents</h1>
+      <p class="lead">An agent is a model plus a loop. The loop calls the model, runs the tools the model asks for, feeds the results back, and stops when the work is done or a limit is reached. Everything else is a set of decisions. You either make each one yourself or hand it to a product.</p>
+      <div class="formula" aria-label="Model plus loop plus tools equals an agent">
+        <span>Model</span><span class="op">+</span><span>Loop</span><span class="op">+</span><span>Tools</span><span class="op">=</span><span class="result">Agent</span>
+      </div>
+      <nav class="mobile-toc" aria-label="Jump to section">
+        <a href="#decisions">Nine decisions</a><a href="#approaches">Seven approaches</a><a href="#quality">Quality</a><a href="#principles">Principles</a><a href="#choosing">Choosing</a><a href="#myths">Misconceptions</a><a href="#landscape">Landscape</a>
+      </nav>
+      <div class="takeaways" id="takeaways">
+        <div><h3>It is nine decisions, not one</h3><p>Model, inference route, loop, orchestration, state, execution environment, tools, authority and evaluation. A product makes some of them for you.</p></div>
+        <div><h3>Lock-in comes in parts</h3><p>Swapping the model is usually cheap. Swapping the loop library or the host is expensive. Prompts tuned to one model never move for free.</p></div>
+        <div><h3>Quality comes from the model and its inputs</h3><p>Model fit, what the model sees each turn, tool design and deterministic checks matter most. The framework rarely does.</p></div>
+        <div><h3>The harness still matters</h3><p>The same model scores up to 8 points apart on Terminal-Bench 2.1 depending on the loop around it.</p></div>
+        <div><h3>Authority lives outside the model</h3><p>Code at the tool boundary decides what an agent may do. A prompt cannot enforce permissions.</p></div>
+        <div><h3>Measure before you switch</h3><p>Own what is your product's value, rent the rest, keep rented parts replaceable, and let an evaluation decide.</p></div>
+      </div>
+    </header>
+
+    <section id="terms" aria-labelledby="terms-h">
+      <div class="section-head">
+        <div class="label">Vocabulary</div>
+        <h2 id="terms-h">Terms</h2>
+        <p>Most confusion about agents comes from one word meaning two things. These are the meanings used on this page.</p>
+      </div>
+      <dl class="terms">
+        <div><dt>Model</dt><dd>The LLM that reasons and chooses actions. <em>Not the product that wraps it.</em></dd></div>
+        <div><dt>Inference route</dt><dd>Where and on what terms the model runs: the vendor's API, a cloud marketplace, self-hosted serving such as vLLM, or a gateway. The same model on two routes can differ in features, data terms and refusals.</dd></div>
+        <div><dt>Agent loop</dt><dd>The code that calls the model, runs the requested tools, appends the results and decides when to stop.</dd></div>
+        <div><dt>Harness</dt><dd>The loop plus what makes it work well: caching, compaction, paging of large tool output, built-in tools, recovery, budgets and subagents.</dd></div>
+        <div><dt>Thin agent SDK</dt><dd>A library that gives you the loop and leaves tools, sandbox, state and hosting to you. OpenAI Agents SDK, Google ADK, Pydantic AI.</dd></div>
+        <div><dt>Full harness as a library</dt><dd>A finished agent with built-in file, shell and web tools that you embed. Claude Agent SDK, Codex SDK, OpenHands SDK.</dd></div>
+        <div><dt>Orchestration framework</dt><dd>A library for structuring multi-step work as graphs or state machines, usually with checkpoints. LangGraph, Microsoft Agent Framework workflows, CrewAI flows.</dd></div>
+        <div><dt>Durable execution engine</dt><dd>Infrastructure that records progress so work survives crashes and restarts. Temporal, Restate, DBOS, Dapr.</dd></div>
+        <div><dt>Managed agent runtime</dt><dd>A vendor hosts the loop, the sandbox or both. Claude Managed Agents, Amazon Bedrock AgentCore, Microsoft Foundry Agent Service.</dd></div>
+        <div><dt>Execution environment</dt><dd>Where the side effects of tool calls happen: your process, a container, a gVisor or microVM sandbox, or a hosted sandbox.</dd></div>
+        <div><dt>Tool protocol</dt><dd>A standard interface: MCP connects tools and resources to models; A2A connects agents to agents.</dd></div>
+        <div><dt>Skill</dt><dd>A packaged procedure in the open Agent Skills format (<code>SKILL.md</code> plus references and scripts), loaded only when needed. It carries knowledge, never permission.</dd></div>
+      </dl>
+    </section>
+
+    <section id="decisions" aria-labelledby="decisions-h">
+      <div class="section-head">
+        <div class="label">The stack</div>
+        <h2 id="decisions-h">The nine decisions behind every agent</h2>
+        <p>Every agent system answers these questions, either on purpose or by accepting a product's defaults. They group into four layers.</p>
+      </div>
+      <div class="stack">
+        <div class="band">
+          <div class="band-name"><strong>What thinks</strong><span>The intelligence and where it runs</span></div>
+          <ul>
+            <li><b>Model</b><span class="q">Which model is good enough at this specific task?</span><span class="m">Choosing from public leaderboards instead of your own evaluation.</span></li>
+            <li><b>Inference route</b><span class="q">Where can the model run, under whose data, retention and usage terms?</span><span class="m">Treating the route as a config value when its policy differs.</span></li>
+          </ul>
+        </div>
+        <div class="band">
+          <div class="band-name"><strong>How it runs</strong><span>The machinery around the model</span></div>
+          <ul>
+            <li><b>Loop and harness</b><span class="q">Who writes the call-tools-repeat loop and its context management?</span><span class="m">Underestimating what a mature harness already does.</span></li>
+            <li><b>Orchestration</b><span class="q">How is multi-step work structured, and who decides the structure?</span><span class="m">Letting a model invent structure where cost and consent must be known first.</span></li>
+            <li><b>State and durability</b><span class="q">What must survive a crash, and at what grain?</span><span class="m">Checkpointing the conversation and assuming the outside world comes back too.</span></li>
+            <li><b>Execution environment</b><span class="q">Where do side effects run, and how isolated?</span><span class="m">Running model-chosen commands without a sandbox.</span></li>
+          </ul>
+        </div>
+        <div class="band">
+          <div class="band-name"><strong>What it may do</strong><span>Capabilities and limits</span></div>
+          <ul>
+            <li><b>Tools and protocols</b><span class="q">What can the agent do, through which interface?</span><span class="m">Too many tools, too coarse tools, or raw output dumped into context.</span></li>
+            <li><b>Authority</b><span class="q">Who decides what is allowed, and is it enforced outside the model?</span><span class="m">Trusting the prompt to enforce permissions.</span></li>
+          </ul>
+        </div>
+        <div class="band">
+          <div class="band-name"><strong>How you know</strong><span>Proof and cost</span></div>
+          <ul>
+            <li><b>Evaluation and observability</b><span class="q">How do you know it works, and what it cost?</span><span class="m">No ground truth, only "the output looks good".</span></li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <section id="approaches" aria-labelledby="approaches-h">
+      <div class="section-head">
+        <div class="label">Bundles of decisions</div>
+        <h2 id="approaches-h">Seven ways to build</h2>
+        <p>Products and libraries bundle the nine decisions differently. Read the table as who decides each one by default. Real systems often combine two or three approaches.</p>
+      </div>
+      <div class="mark-key" aria-hidden="true">
+        <span><i class="mark p"></i>The product or library decides</span>
+        <span><i class="mark s"></i>Shared: it provides, you configure</span>
+        <span><i class="mark y"></i>You build and decide</span>
+      </div>
+      <div class="frame" role="region" aria-label="Who decides what, by approach" tabindex="0">
+        <table class="matrix">
+          <thead>
+            <tr><th scope="col">Approach</th><th scope="col">Model</th><th scope="col">Route</th><th scope="col">Loop</th><th scope="col">Orches&shy;tration</th><th scope="col">State</th><th scope="col">Environ&shy;ment</th><th scope="col">Tools</th><th scope="col">Authority</th><th scope="col">Evaluation</th></tr>
+          </thead>
+          <tbody id="matrix-body"></tbody>
+        </table>
+      </div>
+      <p class="note">These are typical defaults. Self-hosting, managed add-ons and configuration move the lines. Evaluation is yours in every approach.</p>
+
+      <div class="approaches">
+        <article class="approach">
+          <div><h3>1. Use a hosted agent product</h3><p class="ex">ChatGPT agent features, Claude apps, Gemini Enterprise agents</p></div>
+          <p><span class="k">Fits</span>Individual and team productivity.</p>
+          <p><span class="k">Watch out</span>No product control. Data terms are the vendor's.</p>
         </article>
-    </main>
+        <article class="approach">
+          <div><h3>2. Extend an existing agent</h3><p class="ex">Claude Code, Codex CLI, Gemini CLI, OpenCode, Goose. Embedded: Claude Agent SDK, Codex SDK, OpenHands SDK</p></div>
+          <p><span class="k">Fits</span>Developer automation, and products whose job matches the agent's built-in shape, which is mostly coding.</p>
+          <p><span class="k">Watch out</span>Its tool and permission model may not match yours. Some run one vendor's models only. Commercial terms apply.</p>
+        </article>
+        <article class="approach">
+          <div><h3>3. Visual or low-code builder</h3><p class="ex">n8n, Dify, Microsoft Copilot Studio</p></div>
+          <p><span class="k">Fits</span>Business processes owned by non-engineers, with many SaaS connectors.</p>
+          <p><span class="k">Watch out</span>Weak testing and versioning. Vendor builders can be short-lived: OpenAI's Agent Builder launched in October 2025 and closes on 30 November 2026.</p>
+        </article>
+        <article class="approach">
+          <div><h3>4. Thin agent SDK</h3><p class="ex">OpenAI Agents SDK, Google ADK, Pydantic AI, Microsoft Agent Framework</p></div>
+          <p><span class="k">Fits</span>Products with their own tools, policies and platform.</p>
+          <p><span class="k">Watch out</span>You build harness maturity yourself. Most are still 0.x and release weekly.</p>
+        </article>
+        <article class="approach">
+          <div><h3>5. Orchestration framework</h3><p class="ex">LangGraph, Microsoft Agent Framework workflows, ADK 2 graph workflows, CrewAI flows</p></div>
+          <p><span class="k">Fits</span>Long-running, branching workflows with human approvals, written by engineers.</p>
+          <p><span class="k">Watch out</span>Workflows become code. It can duplicate an orchestrator you already have.</p>
+        </article>
+        <article class="approach">
+          <div><h3>6. Managed agent runtime</h3><p class="ex">Claude Managed Agents, Bedrock AgentCore, Google Agent Runtime, Foundry Agent Service</p></div>
+          <p><span class="k">Fits</span>Teams with no agent infrastructure who accept the vendor's cloud.</p>
+          <p><span class="k">Watch out</span>Data residency and retention, cost, and lock-in at the hosting layer.</p>
+        </article>
+        <article class="approach">
+          <div><h3>7. Own loop and platform</h3><p class="ex">Direct model API calls inside your own system</p></div>
+          <p><span class="k">Fits</span>Unusual constraints, or when you already own most of the harness.</p>
+          <p><span class="k">Watch out</span>You rebuild context management, recovery and tool plumbing that mature harnesses have already refined.</p>
+        </article>
+      </div>
+
+      <div class="callouts">
+        <div class="callout"><h3>"SDK" names two different things</h3><p>The OpenAI Agents SDK is a thin loop. The Claude Agent SDK is Claude Code packaged as a library, with built-in tools, and runs Claude models only. The line moves too: in 2026 the OpenAI SDK added sandbox agents with shell, filesystem, skills and compaction.</p></div>
+        <div class="callout"><h3>SDK versus framework is emphasis</h3><p>Both are libraries that can run an agent loop. SDKs centre on the agent; frameworks centre on the workflow around it. Either can be model-agnostic.</p></div>
+        <div class="callout"><h3>Approaches combine</h3><p>A common production shape owns orchestration, authority and state in its own platform, and rents only the loop inside each step from a thin SDK.</p></div>
+      </div>
+    </section>
+
+    <section id="lockin" aria-labelledby="lockin-h">
+      <div class="section-head">
+        <div class="label">Portability</div>
+        <h2 id="lockin-h">Lock-in comes in parts</h2>
+        <p>"Can we switch?" has six separate answers. Check each one.</p>
+      </div>
+      <div class="frame" role="region" aria-label="Kinds of lock-in" tabindex="0">
+        <table style="min-width:640px">
+          <thead><tr><th scope="col">Kind</th><th scope="col">Cheap when</th><th scope="col">Expensive when</th></tr></thead>
+          <tbody>
+            <tr><th scope="row">Model</th><td>The loop speaks a standard wire format such as OpenAI-compatible Chat Completions</td><td>You depend on model-specific features or a vendor's structured-output guarantee</td></tr>
+            <tr><th scope="row">Loop library</th><td>Its imports live in one module and you own your data contracts</td><td>Its types are everywhere, or you use its internal modules</td></tr>
+            <tr><th scope="row">Vendor-only features</th><td>You use only portable features</td><td>For example, the OpenAI Agents SDK rejects its Responses-only features on Chat Completions backends</td></tr>
+            <tr><th scope="row">Hosting</th><td>You host it</td><td>A managed runtime holds your sessions, memory and sandboxes</td></tr>
+            <tr><th scope="row">Data and traces</th><td>Transcripts and traces live in your database</td><td>Traces go to the vendor by default. The OpenAI Agents SDK uploads them to OpenAI unless you turn it off</td></tr>
+            <tr><th scope="row">Behaviour</th><td>You have an evaluation that shows the gap</td><td>Prompts and skills were tuned on one model. They always behave differently on another</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section id="quality" aria-labelledby="quality-h">
+      <div class="section-head">
+        <div class="label">Where results come from</div>
+        <h2 id="quality-h">What makes an agent good</h2>
+        <p>Roughly in order of impact. Before switching frameworks, use an evaluation to find which of these is your bottleneck.</p>
+      </div>
+      <ol class="ranked">
+        <li><b>Model fit for the task</b><p>Measured on your tasks, not on generic leaderboards.</p></li>
+        <li><b>What the model sees each turn</b><p>Relevant evidence, a stable prompt prefix that can be cached, large output paged instead of dumped, text instead of encoded binary, old turns summarised or cleared.</p></li>
+        <li><b>Tool design</b><p>The right granularity, narrow reads, bounded outputs, and errors that tell the model what to do next.</p></li>
+        <li><b>Deterministic verification</b><p>The model decides what to try. Assertions, exit codes, parsers and schema checks establish what happened.</p></li>
+        <li><b>Harness maturity</b><p>Compaction, caching, retries, recovery and subagents. See the chart below.</p></li>
+        <li><b>The orchestration framework</b><p>It affects how reliably multi-step work runs. It rarely affects how well the agent reasons.</p></li>
+      </ol>
+
+      <div class="example">
+        <div class="label">From a production audit agent</div>
+        <p class="big">12.7M input tokens for 59K output, 8% cached</p>
+        <p>The run stopped before writing its report. A countdown in the system prompt broke caching on every turn, and source files arrived base64-encoded. That was an engineering defect in what the model saw, not a limit of the model.</p>
+      </div>
+
+      <figure class="chart" id="harness-chart">
+        <figcaption class="chart-title">
+          <strong>Same model, different harness</strong>
+          <span>Terminal-Bench 2.1 score (%), by harness. Independent leaderboard entries, not controlled experiments.</span>
+        </figcaption>
+        <div class="legend">
+          <span><i class="s1"></i>The vendor's own harness</span>
+          <span><i class="s2"></i>Terminus 2, a neutral harness</span>
+        </div>
+        <div class="db" id="db"></div>
+        <details class="table-view">
+          <summary>Show the numbers as a table</summary>
+          <div class="frame">
+            <table>
+              <thead><tr><th scope="col">Model</th><th scope="col">Vendor harness</th><th scope="col">Vendor harness score</th><th scope="col">Terminus 2 score</th><th scope="col">Gap (points)</th></tr></thead>
+              <tbody id="db-table"></tbody>
+            </table>
+          </div>
+        </details>
+        <div class="tooltip" id="tip" hidden></div>
+      </figure>
+      <p class="note">The effect ranges from nothing to about 8 points and does not always favour the vendor's own harness. Source: Snorkel Terminal-Bench 2.1 leaderboard, read 20 October 2026.</p>
+    </section>
+
+    <section id="autonomy" aria-labelledby="autonomy-h">
+      <div class="section-head">
+        <div class="label">Autonomy</div>
+        <h2 id="autonomy-h">Declare the structure, free the tactics</h2>
+        <p>How you build an agent and how much freedom it gets are separate choices. The pattern that suits most products is to let the platform fix the shape of the work and let the model choose how to do each part.</p>
+      </div>
+      <div class="split">
+        <div>
+          <h3>The platform declares</h3>
+          <ul>
+            <li>Which steps exist and how they depend on each other</li>
+            <li>What each step may touch</li>
+            <li>Budgets and time limits</li>
+            <li>Required outputs</li>
+            <li>What the user agreed to before launch</li>
+          </ul>
+        </div>
+        <div class="decides-model">
+          <h3>The model chooses</h3>
+          <ul>
+            <li>Which tools to use, and in what order</li>
+            <li>How deep to dig</li>
+            <li>When evidence justifies more work, within pre-approved templates</li>
+            <li>How to explain what it found</li>
+          </ul>
+        </div>
+      </div>
+      <div class="prose">
+        <p>This keeps what users and operators need to know in advance: what they are authorising, what it will cost, and whether two runs can be compared. A planner agent that invents the structure gives up all three. Use one only where they do not matter.</p>
+      </div>
+    </section>
+
+    <section id="principles" aria-labelledby="principles-h">
+      <div class="section-head">
+        <div class="label">Durable rules</div>
+        <h2 id="principles-h">Design principles</h2>
+        <p>These hold whatever framework or vendor you choose.</p>
+      </div>
+      <div class="principles">
+        <div>
+          <h3>Scope</h3>
+          <ul>
+            <li><b>Start simple.</b> One call, then a fixed workflow, then an agent. Add agency only where the work cannot be specified in advance.</li>
+            <li><b>Use the fewest agents that work.</b> Split only for different tools, models or permissions, or when one context would overflow.</li>
+          </ul>
+        </div>
+        <div>
+          <h3>Safety</h3>
+          <ul>
+            <li><b>Keep authority outside the model.</b> Permissions, consent, budgets and approvals are enforced in code at the tool boundary.</li>
+            <li><b>Treat everything the agent reads as untrusted.</b> Web pages, repositories, tool output, documents and uploaded skills can all carry prompt injection.</li>
+            <li><b>Isolate execution</b> in proportion to risk: container, gVisor or microVM.</li>
+            <li><b>Make side effects safe to repeat,</b> and confirm destructive ones at the point of use.</li>
+          </ul>
+        </div>
+        <div>
+          <h3>Reliability</h3>
+          <ul>
+            <li><b>The model proposes; deterministic code confirms.</b> A model's opinion of a screenshot is never the only evidence of a pass or fail.</li>
+            <li><b>Validate structured output.</b> One self-hosted model returned malformed JSON in 3 of 4 samples with strict mode on.</li>
+            <li><b>Persist at task boundaries in your own data model.</b> Restoring a conversation does not restore a browser session, a login or test data.</li>
+          </ul>
+        </div>
+        <div>
+          <h3>Context and cost</h3>
+          <ul>
+            <li><b>Bound every loop:</b> turns, tokens, time, money and side effects. Reserve budget for the final report.</li>
+            <li><b>Engineer the context.</b> Stable prefix, decoded text, paged output, narrow reads, only the schemas the step needs, old tool output cleared.</li>
+          </ul>
+        </div>
+        <div class="wide">
+          <h3>Change</h3>
+          <ul>
+            <li><b>Evaluate on real tasks with ground truth.</b> Measure recall, precision, cost per completed task and variation across repeats. Re-run on every model or harness change. One improved case proves nothing.</li>
+            <li><b>Keep rented parts replaceable.</b> Confine library imports, own your data contracts, and keep a conformance test per model and per loop.</li>
+            <li><b>Treat model and endpoint capabilities as dated measurements.</b> Vendor APIs and self-hosted serving both change without notice.</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <section id="durability" aria-labelledby="durability-h">
+      <div class="section-head">
+        <div class="label">Three recurring questions</div>
+        <h2 id="durability-h">Durability, multiple agents, and skills</h2>
+      </div>
+      <h3>Surviving crashes: pick the grain</h3>
+      <div class="three">
+        <div><span class="label">Conversation</span><p>Saves message history and run state. Tools: SDK sessions, resumable run state. Fits chat-like products.</p></div>
+        <div><span class="label">Step</span><p>Saves progress inside a workflow graph. Tools: LangGraph checkpoints, Temporal, Restate, DBOS, Dapr. Fits long, expensive steps that must not repeat.</p></div>
+        <div><span class="label">Domain</span><p>Your own records of tasks, attempts and outputs; a crashed task restarts from its inputs. Fits products with clear task boundaries. Usually the right default.</p></div>
+      </div>
+      <div class="prose"><p>Work that spans days or weeks, such as an engagement with human approvals, should be a durable business record containing bounded runs. Do not keep one agent loop alive for weeks.</p></div>
+
+      <h3>More than one agent</h3>
+      <div class="three">
+        <div><span class="label">Helps when</span><ul><li>Sub-tasks are independent and can run in parallel</li><li>One context would overflow</li><li>Sub-tasks need different tools or permissions</li><li>A separate context should review the work</li></ul></div>
+        <div><span class="label">Costs</span><ul><li>Tokens multiply</li><li>Coordination fails in new ways</li><li>Evaluation gets harder</li></ul></div>
+        <div><span class="label">Patterns</span><ul><li>Coordinator with workers</li><li>Agents called as tools</li><li>Hand-offs between specialists</li><li>Declared fan-out: a template the evidence can instantiate several times</li></ul></div>
+      </div>
+
+      <h3>Skills and extensibility</h3>
+      <div class="prose">
+        <p><strong>Use the open format.</strong> Agent Skills (<code>SKILL.md</code> plus references and scripts) became an open standard in December 2025 and is supported by Codex and many other agents. A skill loads in stages: name and description first, the body when needed, references on demand.</p>
+        <p><strong>A skill is knowledge, not authority.</strong> If a skill could declare its own permissions, any uploaded file could grant itself power. Permissions come from the platform.</p>
+        <p><strong>Skills are less portable than they look.</strong> A skill assumes a tool shape, such as shell, file editing and web access, and was tuned on one model. Under a different harness or model it behaves differently. Measure parity before you promise it.</p>
+        <p><strong>Workflows as data scale better than workflows as code.</strong> If end users will extend your product, a declarative workflow document can be validated, signed, priced and shown to the user before it runs. A workflow written as framework code needs an engineer and a review for every change.</p>
+      </div>
+    </section>
+
+    <section id="choosing" aria-labelledby="choosing-h">
+      <div class="section-head">
+        <div class="label">Selection guide</div>
+        <h2 id="choosing-h">Choosing an approach</h2>
+      </div>
+      <div class="frame" role="region" aria-label="Selection guide" tabindex="0">
+        <table style="min-width:680px">
+          <thead><tr><th scope="col">If your situation is</th><th scope="col">Start with</th><th scope="col">Avoid</th></tr></thead>
+          <tbody>
+            <tr><th scope="row">Personal or team productivity</th><td>A hosted agent product</td><td>Building anything</td></tr>
+            <tr><th scope="row">Internal developer automation</th><td>An existing coding agent run headless in CI, extended with skills and hooks</td><td>Writing your own harness</td></tr>
+            <tr><th scope="row">Business processes across many SaaS tools, owned by non-engineers</th><td>A visual builder, self-hosted if data matters</td><td>A vendor builder without a track record</td></tr>
+            <tr><th scope="row">A product with its own tools, policies and evidence needs</th><td>Your own platform for orchestration and authority, with a thin SDK or your own loop inside each step</td><td>A full harness whose permission model fights yours</td></tr>
+            <tr><th scope="row">Long-running, branching workflows with approvals, written by engineers</th><td>An orchestration framework or a durable execution engine</td><td>One agent loop kept alive for days</td></tr>
+            <tr><th scope="row">Workflows defined by users that must be checked and priced before they run</th><td>Declarative workflow documents run by your own supervisor</td><td>Framework code as the user-facing format</td></tr>
+            <tr><th scope="row">No infrastructure team, vendor data terms acceptable</th><td>A managed agent runtime</td><td>Building a platform you will not staff</td></tr>
+            <tr><th scope="row">Strict data residency or sovereignty</th><td>Self-hosted inference and a self-hosted loop</td><td>Any route you cannot audit. Accept that model choice is limited to what you can serve</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="prose">
+        <h3>Answer these first</h3>
+        <ol style="margin:0;padding-left:1.2em;display:grid;gap:6px">
+          <li>Which quality factor is your bottleneck, according to an evaluation?</li>
+          <li>What must be enforced outside the model?</li>
+          <li>Who will author workflows: engineers, administrators or end users?</li>
+          <li>Where may data and models run?</li>
+          <li>Does work outlive a process, and does it pause for humans?</li>
+          <li>How much harness engineering can the team sustain?</li>
+        </ol>
+      </div>
+    </section>
+
+    <section id="myths" aria-labelledby="myths-h">
+      <div class="section-head">
+        <div class="label">Corrections</div>
+        <h2 id="myths-h">Common misconceptions</h2>
+        <p>Each of these appears often in vendor material and in AI-generated advice.</p>
+      </div>
+      <div class="myths">
+        <div class="myth"><p class="said"><span class="tag">Heard</span>The approaches form a ladder from easy to powerful.</p><p class="real"><span class="tag">In practice</span>They are bundles of nine separate decisions. More control does not mean a better agent.</p></div>
+        <div class="myth"><p class="said"><span class="tag">Heard</span>All agent SDKs are the same kind of thing.</p><p class="real"><span class="tag">In practice</span>Some are a thin loop and some are a full agent with built-in tools. The Claude Agent SDK also runs Claude models only.</p></div>
+        <div class="myth"><p class="said"><span class="tag">Heard</span>A better orchestration framework makes a smarter agent.</p><p class="real"><span class="tag">In practice</span>A framework makes multi-step work more reliable. Reasoning quality comes from the model, its context, its tools and the checks around it.</p></div>
+        <div class="myth"><p class="said"><span class="tag">Heard</span>Switching models is a config change.</p><p class="real"><span class="tag">In practice</span>The wire format may be. The behaviour is not. Prompts and skills tuned on one model change on another, so measure the difference.</p></div>
+        <div class="myth"><p class="said"><span class="tag">Heard</span>Checkpointing the agent lets you resume anything.</p><p class="real"><span class="tag">In practice</span>It restores the conversation. The browser session, the login, the test data and every side effect stay as they are.</p></div>
+        <div class="myth"><p class="said"><span class="tag">Heard</span>Strict JSON mode guarantees valid output.</p><p class="real"><span class="tag">In practice</span>It depends on the serving stack. Validate every response.</p></div>
+        <div class="myth"><p class="said"><span class="tag">Heard</span>The prompt can define what the agent is allowed to do.</p><p class="real"><span class="tag">In practice</span>Only code at the tool boundary can enforce it. A prompt can be argued with, including by text the agent reads.</p></div>
+        <div class="myth"><p class="said"><span class="tag">Heard</span>The framework list from last year still holds.</p><p class="real"><span class="tag">In practice</span>AutoGen went into maintenance mode in 2025 and Microsoft Agent Framework replaced it. OpenAI's Agent Builder closes 14 months after launch. Re-check before you choose.</p></div>
+      </div>
+    </section>
+
+    <section id="landscape" aria-labelledby="landscape-h">
+      <div class="section-head">
+        <div class="label">Snapshot</div>
+        <h2 id="landscape-h">Landscape, October 2026</h2>
+        <p>Checked against primary sources on 20 October 2026, except where marked reported. This changes monthly, so re-check before relying on it.</p>
+      </div>
+      <div class="frame" role="region" aria-label="Landscape snapshot" tabindex="0">
+        <table style="min-width:760px">
+          <thead><tr><th scope="col">Product</th><th scope="col">Category</th><th scope="col">Status</th><th scope="col">Notes</th></tr></thead>
+          <tbody>
+            <tr><th scope="row">OpenAI Agents SDK</th><td>Thin SDK, adding harness features</td><td>0.24.0, 15 Oct 2026. No 1.0 yet</td><td>Sessions, resumable run state for approvals, MCP, sandbox agents with shell, filesystem, skills and compaction. Runs any OpenAI-compatible endpoint. Uploads traces to OpenAI by default</td></tr>
+            <tr><th scope="row">Claude Agent SDK</th><td>Full harness as a library</td><td>Python 0.2.168, 15 Oct 2026</td><td>Runs the bundled Claude Code binary. Claude models only. Anthropic Commercial Terms</td></tr>
+            <tr><th scope="row">Claude Managed Agents</th><td>Managed runtime</td><td>Beta</td><td>Anthropic-hosted loop with an Anthropic or self-hosted sandbox. Not eligible for zero data retention</td></tr>
+            <tr><th scope="row">Google ADK</th><td>Thin SDK with graph workflows</td><td>2.12.0, 13 Oct 2026</td><td>Model-agnostic. Python, TypeScript, Go, Java. A2A support</td></tr>
+            <tr><th scope="row">LangGraph</th><td>Orchestration framework</td><td>1.2.16, 16 Oct 2026</td><td>Durable execution, Postgres checkpointer, interrupts. LangChain 1.0 agents run on it</td></tr>
+            <tr><th scope="row">Microsoft Agent Framework</th><td>SDK and workflows</td><td>1.0 GA, 3 Apr 2026</td><td>Replaces AutoGen and Semantic Kernel</td></tr>
+            <tr><th scope="row">CrewAI</th><td>Multi-agent framework</td><td>1.15.28, 14 Oct 2026</td><td></td></tr>
+            <tr><th scope="row">Pydantic AI</th><td>Thin SDK</td><td>2.58.0, 20 Oct 2026</td><td></td></tr>
+            <tr><th scope="row">Amazon Bedrock AgentCore</th><td>Managed runtime</td><td>GA, 13 Oct 2025</td><td>Framework- and model-agnostic. MCP and A2A</td></tr>
+            <tr><th scope="row">Microsoft Foundry Agent Service</th><td>Managed runtime</td><td>Hosted agents GA, 9 Jul 2026 (reported)</td><td>One sandbox per session</td></tr>
+            <tr><th scope="row">OpenAI Agent Builder</th><td>Visual builder</td><td>Closes 30 Nov 2026</td><td>OpenAI's hosted Evals closes too. ChatKit continues</td></tr>
+            <tr><th scope="row">MCP</th><td>Tool protocol</td><td>Spec 2026-07-28</td><td>Stateless core (reported). Governed by the Linux Foundation's Agentic AI Foundation</td></tr>
+            <tr><th scope="row">A2A</th><td>Agent-to-agent protocol</td><td>Linux Foundation since June 2025</td><td>150+ supporting organisations</td></tr>
+            <tr><th scope="row">Agent Skills</th><td>Skill format</td><td>Open standard, Dec 2025</td><td>Supported by Codex and many other agents (count reported)</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section id="sources" aria-labelledby="sources-h">
+      <div class="section-head"><div class="label">References</div><h2 id="sources-h">Sources</h2></div>
+      <ul class="sources">
+        <li>OpenAI Agents SDK: <a href="https://openai.github.io/openai-agents-python/">docs</a>, <a href="https://openai.github.io/openai-agents-python/sandbox/guide/">sandbox guide</a>, <a href="https://openai.github.io/openai-agents-python/models/">models and tracing</a>, <a href="https://openai.github.io/openai-agents-python/running_agents/">running agents</a>, <a href="https://github.com/openai/openai-agents-python/releases">releases</a></li>
+        <li>Claude Agent SDK: <a href="https://code.claude.com/docs/en/agent-sdk/overview">overview</a>, <a href="https://code.claude.com/docs/en/llm-gateway">gateway policy</a>, <a href="https://github.com/anthropics/claude-agent-sdk-python/releases">releases</a></li>
+        <li>Claude Managed Agents: <a href="https://platform.claude.com/docs/en/managed-agents/overview">overview</a>, <a href="https://claude.com/blog/claude-managed-agents-updates">updates</a></li>
+        <li>Google ADK: <a href="https://adk.dev/">docs</a>, <a href="https://github.com/google/adk-python/releases">releases</a></li>
+        <li>LangGraph and LangChain: <a href="https://blog.langchain.com/langchain-langgraph-1dot0">1.0 announcement</a>, <a href="https://docs.langchain.com/oss/python/langgraph/overview">overview</a></li>
+        <li><a href="https://devblogs.microsoft.com/agent-framework/microsoft-agent-framework-version-1-0/">Microsoft Agent Framework 1.0</a>; <a href="https://devblogs.microsoft.com/foundry/whats-new-in-microsoft-foundry-july-august-2026/">Foundry July–August 2026</a></li>
+        <li><a href="https://aws.amazon.com/about-aws/whats-new/2025/10/amazon-bedrock-agentcore-available">Amazon Bedrock AgentCore GA</a></li>
+        <li><a href="https://openai.com/index/introducing-agentkit/">OpenAI AgentKit page, with the June 2026 wind-down notice</a></li>
+        <li>MCP: <a href="https://blog.modelcontextprotocol.io/posts/2026-07-28/">2026-07-28 specification</a>, <a href="https://blog.modelcontextprotocol.io/posts/2025-12-09-mcp-joins-agentic-ai-foundation/">Agentic AI Foundation</a></li>
+        <li><a href="https://snorkel.ai/leaderboard/terminal-bench-2-1/">Terminal-Bench 2.1 leaderboard</a></li>
+        <li>Agent Skills adoption (secondary): <a href="https://www.noqta.tn/en/news/skill-md-open-standard-30-ai-coding-tools-adoption-2026">noqta.tn</a>, <a href="https://codex.danielvaughan.com/2026/05/05/agent-skills-open-standard-portable-skills-codex-cli-cross-agent/">portable SKILL.md guide</a></li>
+        <li><a href="https://playwright.dev/docs/trace-viewer-intro">Playwright trace viewer</a></li>
+      </ul>
+    </section>
+
+    <footer>Product facts on this page are a dated snapshot from 20 October 2026. The framework and principles are meant to last longer than the products named.</footer>
+  </main>
+</div>
 
 <script>
-document.addEventListener('DOMContentLoaded', () => {
-    // --- Intersection Observer for animations ---
-    const observer = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-            if (entry.isIntersecting) {
-                entry.target.classList.add('in-view');
-            }
-        });
-    }, { threshold: 0.1 });
-
-    document.querySelectorAll('.fade-in-section, .content-glow').forEach(section => {
-        observer.observe(section);
+(function () {
+  // Who decides what: p = product decides, s = shared, y = you.
+  // Columns: Model, Route, Loop, Orchestration, State, Environment, Tools, Authority, Evaluation.
+  var codes = {
+    "1. Hosted agent product":      ["s","p","p","p","p","p","s","s","y"],
+    "2. Extend an existing agent":  ["s","s","p","s","s","s","s","s","y"],
+    "3. Visual builder":            ["s","s","p","s","s","p","s","s","y"],
+    "4. Thin agent SDK":            ["y","y","p","s","s","y","y","y","y"],
+    "5. Orchestration framework":   ["y","y","s","s","s","y","y","y","y"],
+    "6. Managed agent runtime":     ["s","p","p","s","p","p","s","s","y"],
+    "7. Own loop and platform":     ["y","y","y","y","y","y","y","y","y"]
+  };
+  var words = { p: "The product decides", s: "Shared", y: "You decide" };
+  var body = document.getElementById("matrix-body");
+  Object.keys(codes).forEach(function (name) {
+    var tr = document.createElement("tr");
+    var th = document.createElement("th");
+    th.scope = "row";
+    th.textContent = name;
+    tr.appendChild(th);
+    codes[name].forEach(function (c) {
+      var td = document.createElement("td");
+      var m = document.createElement("i");
+      m.className = "mark " + c;
+      m.title = words[c];
+      var sr = document.createElement("span");
+      sr.className = "sr";
+      sr.textContent = words[c];
+      td.appendChild(m);
+      td.appendChild(sr);
+      tr.appendChild(td);
     });
+    body.appendChild(tr);
+  });
 
-    // No .app-grid-container or FAQ, so skip those blocks.
-});
+  // Harness chart: [model, vendor harness, vendor score, Terminus 2 score]
+  var data = [
+    ["Gemini 3 Pro", "Gemini CLI", 65.8, 73.9],
+    ["GPT-5.5", "Codex CLI", 83.1, 78.0],
+    ["Claude Fable 5", "Claude Code", 83.8, 80.4],
+    ["Claude Opus 4.7", "Claude Code", 68.9, 66.1],
+    ["Gemini 3.1 Pro", "Gemini CLI", 65.8, 65.6]
+  ];
+  var lo = 60, hi = 90;
+  function pct(v) { return ((v - lo) / (hi - lo)) * 100; }
+  var db = document.getElementById("db");
+  var table = document.getElementById("db-table");
+  var tip = document.getElementById("tip");
+  var fig = document.getElementById("harness-chart");
+
+  function gridLines() {
+    var g = document.createElement("div");
+    g.className = "grid-lines";
+    for (var t = lo; t <= hi; t += 5) {
+      var i = document.createElement("i");
+      i.style.left = pct(t) + "%";
+      g.appendChild(i);
+    }
+    return g;
+  }
+
+  function showTip(btn, value, label) {
+    tip.textContent = "";
+    var b = document.createElement("b");
+    b.textContent = value.toFixed(1) + "%";
+    var s = document.createElement("span");
+    s.textContent = label;
+    tip.appendChild(b);
+    tip.appendChild(s);
+    var fr = fig.getBoundingClientRect();
+    var br = btn.getBoundingClientRect();
+    var x = br.left + br.width / 2 - fr.left;
+    x = Math.max(110, Math.min(fr.width - 110, x));
+    tip.style.left = x + "px";
+    tip.style.top = (br.top - fr.top + 4) + "px";
+    tip.hidden = false;
+  }
+  function hideTip() { tip.hidden = true; }
+
+  data.forEach(function (d) {
+    var own = d[2], neutral = d[3];
+    var gap = Math.abs(own - neutral);
+    var row = document.createElement("div");
+    row.className = "db-row";
+    var name = document.createElement("div");
+    name.className = "db-name";
+    name.textContent = d[0];
+    var small = document.createElement("small");
+    small.textContent = "own harness: " + d[1];
+    name.appendChild(small);
+    var track = document.createElement("div");
+    track.className = "track";
+    track.appendChild(gridLines());
+    var line = document.createElement("div");
+    line.className = "span-line";
+    line.style.left = pct(Math.min(own, neutral)) + "%";
+    line.style.width = (pct(Math.max(own, neutral)) - pct(Math.min(own, neutral))) + "%";
+    track.appendChild(line);
+    [[neutral, "s2", "Terminus 2"], [own, "s1", d[1] + " (vendor's own)"]].forEach(function (p) {
+      var btn = document.createElement("button");
+      btn.type = "button";
+      btn.className = "dot " + p[1];
+      btn.style.left = pct(p[0]) + "%";
+      btn.setAttribute("aria-label", d[0] + ", " + p[2] + ": " + p[0].toFixed(1) + "%");
+      btn.addEventListener("pointerenter", function () { showTip(btn, p[0], d[0] + " in " + p[2]); });
+      btn.addEventListener("pointerleave", hideTip);
+      btn.addEventListener("focus", function () { showTip(btn, p[0], d[0] + " in " + p[2]); });
+      btn.addEventListener("blur", hideTip);
+      track.appendChild(btn);
+    });
+    var gapEl = document.createElement("div");
+    gapEl.className = "db-gap";
+    gapEl.textContent = gap < 0.5
+      ? gap.toFixed(1) + " pts, no real difference"
+      : gap.toFixed(1) + " pts, " + (own > neutral ? "own harness ahead" : "Terminus 2 ahead");
+    row.appendChild(name);
+    row.appendChild(track);
+    row.appendChild(gapEl);
+    db.appendChild(row);
+
+    var tr = document.createElement("tr");
+    [d[0], d[1], own.toFixed(1), neutral.toFixed(1), gap.toFixed(1)].forEach(function (v, i) {
+      var cell = document.createElement(i === 0 ? "th" : "td");
+      if (i === 0) cell.scope = "row";
+      cell.textContent = v;
+      tr.appendChild(cell);
+    });
+    table.appendChild(tr);
+  });
+
+  var axis = document.createElement("div");
+  axis.className = "db-axis";
+  axis.setAttribute("aria-hidden", "true");
+  var spacer = document.createElement("div");
+  spacer.style.gridArea = "name";
+  var at = document.createElement("div");
+  at.className = "track";
+  for (var t = lo; t <= hi; t += 5) {
+    var s = document.createElement("span");
+    s.className = "tick";
+    s.style.left = pct(t) + "%";
+    s.textContent = t;
+    at.appendChild(s);
+  }
+  axis.appendChild(spacer);
+  axis.appendChild(at);
+  db.appendChild(axis);
+
+  // Highlight the current section in the contents rail.
+  var links = Array.prototype.slice.call(document.querySelectorAll(".rail a"));
+  if ("IntersectionObserver" in window && links.length) {
+    var byId = {};
+    links.forEach(function (a) { byId[a.getAttribute("href").slice(1)] = a; });
+    var obs = new IntersectionObserver(function (entries) {
+      entries.forEach(function (e) {
+        if (e.isIntersecting && byId[e.target.id]) {
+          links.forEach(function (a) { a.classList.remove("is-active"); });
+          byId[e.target.id].classList.add("is-active");
+        }
+      });
+    }, { rootMargin: "-20% 0px -70% 0px" });
+    Object.keys(byId).forEach(function (id) {
+      var el = document.getElementById(id);
+      if (el) obs.observe(el);
+    });
+  }
+})();
 </script>
 
-</body>
-</html>
+</body></html>
